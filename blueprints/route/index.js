@@ -1,7 +1,9 @@
-var fs         = require('fs-extra');
-var inflection = require('inflection');
-var path       = require('path');
-var EOL        = require('os').EOL;
+var SilentError = require('../../lib/errors/silent');
+var fs          = require('fs-extra');
+var inflection  = require('inflection');
+var path        = require('path');
+var EOL         = require('os').EOL;
+var EmberRouterGenerator = require('ember-router-generator');
 
 module.exports = {
   description: 'Generates a route and registers it with the router.',
@@ -12,42 +14,73 @@ module.exports = {
       type: String,
       values: ['route', 'resource'],
       default: 'route',
-      aliases: [
+      aliases:[
         {'route': 'route'},
         {'resource': 'resource'}
       ]
+    },
+    {
+      name: 'path',
+      type: String,
+      default: ''
     }
   ],
 
   fileMapTokens: function() {
-    return this.lookupBlueprint('route').fileMapTokens();
+    return {
+      __templatepath__: function(options) {
+        if (options.pod) {
+          return path.join(options.podPath, options.dasherizedModuleName);
+        }
+        return 'templates';
+      },
+      __templatename__: function(options) {
+        if (options.pod) {
+          return 'template';
+        }
+        return options.dasherizedModuleName;
+      }
+    };
   },
 
   beforeInstall: function(options) {
-    this.lookupBlueprint('route').beforeInstall(options);
+    var type = options.type;
+
+    if (type && !/^(resource|route)$/.test(type)) {
+      throw new SilentError('Unknown route type "' + type + '". Should be "route" or "resource".');
+    }
   },
 
   shouldTouchRouter: function(name) {
-    return this.lookupBlueprint('route').shouldTouchRouter(name);
+    var isIndex = /index$/.test(name);
+    var isBasic = name === 'basic';
+    var isApplication = name === 'application';
+
+    return !isBasic && !isIndex && !isApplication;
   },
 
   afterInstall: function(options) {
-    var entity = options.entity;
+    var entity  = options.entity;
 
     if (this.shouldTouchRouter(entity.name) && !options.dryRun) {
       addRouteToRouter(entity.name, {
         type: options.type,
-        root: options.project.root
+        root: options.project.root,
+        path: options.path
       });
     }
   },
 
   beforeUninstall: function(options) {
-    this.lookupBlueprint('route').beforeUninstall(options);
+    var type = options.type;
+
+    if (type && !/^(resource|route)$/.test(type)) {
+      throw new SilentError('Unknown route type "' + type + '". Should be "route" or "resource".');
+    }
   },
 
   afterUninstall: function(options) {
-    var entity = options.entity;
+    var entity  = options.entity;
 
     if (this.shouldTouchRouter(entity.name) && !options.dryRun) {
       removeRouteFromRouter(entity.name, {
@@ -59,75 +92,21 @@ module.exports = {
 };
 
 function removeRouteFromRouter(name, options) {
-  var type       = options.type || 'route';
-  var routerPath = path.join(options.root, 'app', 'router.coffee');
-  var oldContent = fs.readFileSync(routerPath, 'utf-8');
-  var existence  = new RegExp("(?:route|resource)\\s?\\(?\\s?(['\"])" + name + "\\1");
-  var newContent;
-  var plural;
+  var routerPath = path.join(options.root, 'app', 'router.js');
+  var source = fs.readFileSync(routerPath, 'utf-8');
 
-  if (!existence.test(oldContent)) {
-    return;
-  }
+  var routes = new EmberRouterGenerator(source);
+  var newRoutes = routes.remove(name);
 
-  switch (type) {
-  case 'route':
-    var re = new RegExp('^\\s*@route\\s*\\(?(["\'])\\s*'+ name +'\\s*\\1\\)?', 'm');
-    newContent = oldContent.replace(re, '');
-    break;
-  case 'resource':
-    plural = inflection.pluralize(name);
-
-    if (plural === name) {
-      var re = new RegExp('^\\s*@resource\\s*\\(?(["\'])\\s*'+ name +'\\s*\\1,?.*\\)?', 'm');
-      newContent = oldContent.replace(re, '');
-    } else {
-      var re = new RegExp('^\\s*@resource\\s*\\(?(["\'])\\s*'+ name +'\\s*\\1,.*\\)?', 'm');
-      newContent = oldContent.replace(re, '');
-    }
-    break;
-  }
-
-  fs.writeFileSync(routerPath, newContent);
+  fs.writeFileSync(routerPath, newRoutes.code());
 }
 
 function addRouteToRouter(name, options) {
-  var type       = options.type || 'route';
-  var routerPath = path.join(options.root, 'app', 'router.coffee');
-  var oldContent = fs.readFileSync(routerPath, 'utf-8');
-  var existence  = new RegExp("(?:route|resource)\\s?\\(?\\s?(['\"])" + name + "\\1");
-  var plural;
-  var newContent;
+  var routerPath = path.join(options.root, 'app', 'router.js');
+  var source = fs.readFileSync(routerPath, 'utf-8');
 
-  if (existence.test(oldContent)) {
-    return;
-  }
+  var routes = new EmberRouterGenerator(source);
+  var newRoutes = routes.add(name, options);
 
-  var funcRegex = /(map\s*->[\s\S]+)(\n^\S+)/m;
-
-  switch (type) {
-  case 'route':
-    newContent = oldContent.replace(
-      funcRegex,
-      "$1  @route '" + name + "'" + EOL + "$2"
-    );
-    break;
-  case 'resource':
-    plural = inflection.pluralize(name);
-
-    if (plural === name) {
-      newContent = oldContent.replace(
-        funcRegex,
-        "$1  @resource '" + name + "', ->" + EOL + "$2"
-      );
-    } else {
-      newContent = oldContent.replace(
-        funcRegex,
-        "$1  @resource '" + name + "', path: '" + plural + "/:" + name + "_id', ->" + EOL + "$2"
-      );
-    }
-    break;
-  }
-
-  fs.writeFileSync(routerPath, newContent);
+  fs.writeFileSync(routerPath, newRoutes.code());
 }

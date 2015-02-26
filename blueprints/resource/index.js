@@ -1,18 +1,16 @@
+var Blueprint  = require('../../lib/models/blueprint');
+var Promise    = require('../../lib/ext/promise');
+var merge      = require('lodash-node/compat/objects/merge');
 var inflection = require('inflection');
-var Promise    = require('ember-cli/lib/ext/promise');
-var merge      = require('lodash').merge;
-var Blueprint  = require('ember-cli/lib/models/blueprint');
 
 module.exports = {
   description: 'Generates a model and route.',
 
   install: function(options) {
-    this.project = options.project;
     return this._process('install', options);
   },
 
   uninstall: function(options) {
-    this.project = options.project;
     return this._process('uninstall', options);
   },
 
@@ -20,11 +18,8 @@ module.exports = {
     var mainBlueprint = Blueprint.lookup(name, {
       ui: this.ui,
       analytics: this.analytics,
-      project: this.project,
-      paths: this.project.blueprintLookupPaths()
+      project: this.project
     });
-
-    var thisBlueprint = this;
 
     return Promise.resolve()
       .then(function() {
@@ -32,10 +27,9 @@ module.exports = {
       })
       .then(function() {
         var testBlueprint = mainBlueprint.lookupBlueprint(name + '-test', {
-          ui: thisBlueprint.ui,
-          analytics: thisBlueprint.analytics,
-          project: thisBlueprint.project,
-          paths: thisBlueprint.project.blueprintLookupPaths(),
+          ui: this.ui,
+          analytics: this.analytics,
+          project: this.project,
           ignoreMissing: true
         });
 
@@ -44,7 +38,7 @@ module.exports = {
         if (testBlueprint.locals === Blueprint.prototype.locals) {
           testBlueprint.locals = function(options) {
             return mainBlueprint.locals(options);
-          }
+          };
         }
 
         return testBlueprint[type](options);
@@ -62,8 +56,8 @@ module.exports = {
 
     var self = this;
     return this._processBlueprint(type, 'model', modelOptions)
-               .then(function() {
-                 return self._processBlueprint(type, 'route', routeOptions);
-               });
+              .then(function() {
+                return self._processBlueprint(type, 'route', routeOptions);
+              });
   }
 };

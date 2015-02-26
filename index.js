@@ -1,13 +1,12 @@
 'use strict';
 var path      = require('path');
-var chalk     = require('chalk');
 var checker   = require('ember-cli-version-checker');
 var defaults  = require('lodash').defaults;
 
-var CoffeePreprocessor = require('./lib/coffee-preprocessor');
+var TypeScriptPreprocessor = require('./lib/typescript-preprocessor');
 
 module.exports = {
-  name: 'Ember CLI Coffeescript Addon',
+  name: 'Ember CLI TypeScript Addon',
 
   shouldSetupRegistryInIncluded: function() {
     return !checker.isAbove(this, '0.2.0');
@@ -15,12 +14,12 @@ module.exports = {
 
   getConfig: function() {
     var brocfileConfig = {};
-    var coffeeOptions = defaults(this.project.config(process.env.EMBER_ENV).coffeeOptions || {},
+    var typeScriptOptions = defaults(this.project.config(process.env.EMBER_ENV).typeScriptOptions || {},
       brocfileConfig, {
         blueprints: true
       });
 
-    return coffeeOptions;
+    return typeScriptOptions;
   },
 
   blueprintsPath: function() {
@@ -30,16 +29,8 @@ module.exports = {
   },
 
   setupPreprocessorRegistry: function(type, registry) {
-    var plugin = new CoffeePreprocessor(this.getConfig());
+    var plugin = new TypeScriptPreprocessor(this.getConfig());
 
     registry.add('js', plugin);
-  },
-
-  included: function(app) {
-    this.app = app;
-
-    if (this.shouldSetupRegistryInIncluded()) {
-      this.setupPreprocessorRegistry('parent', app.registry);
-    }
   }
 };

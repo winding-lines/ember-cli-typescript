@@ -2,7 +2,9 @@
 Adds precompilation of TypeScript files and all the basic generation
 types to the `ember generate` command.
 
-It was inspired (and forked from) the CoffeeScript addon (https://github.com/kimroen/ember-cli-coffeescript)
+It was inspired (and forked from) the CoffeeScript addon (https://github.com/kimroen/ember-cli-coffeescript).
+
+Note: This is under development and probably doesn't work as expected. PRs welcome!
 
 ### Includes
 - Generating files in TypeScript with `ember generate`

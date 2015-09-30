@@ -25,5 +25,10 @@
     "broccoli-typescript-compiler": "0.0.6",
     "ember-cli": "^1.13.0",
     "ember-cli-version-checker": "^1.0.1"
+  },
+  "ember-addon": {
+    "before": [
+      "ember-cli-babel"
+    ]
   }
 }

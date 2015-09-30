@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/philipbjorge/ember-cli-coffeescript",
   "dependencies": {
-    "broccoli-typescript": "^0.4.0",
     "ember-cli": "^1.13.0",
     "ember-cli-version-checker": "^1.0.1"
   },

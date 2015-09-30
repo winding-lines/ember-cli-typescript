@@ -1,31 +1,28 @@
 {
-  "name": "ember-cli-coffeescript",
+  "name": "ember-cli-typescript",
   "version": "1.13.1",
-  "description": "Adds precompilation of CoffeeScript files and all the basic generation types to the `ember generate` command.",
+  "description": "Adds precompilation of TypeScript files and all the basic generation types to the `ember generate` command.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "ember-addon",
-    "coffeescript",
+    "typescript",
     "blueprints"
   ],
-  "author": "Kim Røen",
+  "author": "Philip Bjorge",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/kimroen/ember-cli-coffeescript"
+    "url": git@github.com:philipbjorge/ember-cli-coffeescript.git"
   },
   "bugs": {
     "url": "https://github.com/kimroen/ember-cli-coffeescript/issues"
   },
-  "homepage": "https://github.com/kimroen/ember-cli-coffeescript",
+  "homepage": "https://github.com/philipbjorge/ember-cli-coffeescript",
   "dependencies": {
-    "broccoli-coffee": "~0.5.0",
     "broccoli-filter": "~0.1.10",
-    "chalk": "^1.0.0",
-    "coffeelint": "^1.6.1",
     "ember-cli": "^1.13.0",
     "ember-cli-version-checker": "^1.0.1",
     "fs-extra": "^0.11.1",

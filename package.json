@@ -22,13 +22,9 @@
   },
   "homepage": "https://github.com/philipbjorge/ember-cli-coffeescript",
   "dependencies": {
-    "broccoli-filter": "~0.1.10",
+    "broccoli-typescript": "^0.4.0",
     "ember-cli": "^1.13.0",
-    "ember-cli-version-checker": "^1.0.1",
-    "fs-extra": "^0.11.1",
-    "ignore": "^2.2.15",
-    "inflection": "^1.4.0",
-    "lodash": "^2.4.1"
+    "ember-cli-version-checker": "^1.0.1"
   },
   "ember-addon": {
     "before": [

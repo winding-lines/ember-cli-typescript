@@ -32,6 +32,8 @@ I would also recommend disabling sourcemaps in ember-cli-build as they don't see
   });
 ```
 
+At this point, you can rename any JS file under the app/ or test/ folders to .ts and expect it to work!
+
 ### How to use
 
 Currently there are no options to pass in.

@@ -3,6 +3,10 @@ Adds precompilation of TypeScript files while still allowing a mix of ES6 and TS
 
 Caveats: SourceMaps don't work.
 
+## Why was this created?
+All the other addons were either not usable, not production ready, or terribly outdated.
+This addon has support for blueprints as well as the latest versions of typescript (1.6, 1.7) thanks to [tildeio/broccoli-typescript-compiler](https://github.com/tildeio/broccoli-typescript-compiler).
+
 ### Includes
 - Preprocessing TypeScript-files in your app, including tests
 - Blueprints

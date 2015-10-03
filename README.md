@@ -5,21 +5,13 @@ Caveats: SourceMaps don't work.
 
 ### Includes
 - Preprocessing TypeScript-files in your app, including tests
+- Blueprints
 
 ### Install
 **Requires that you have ember-cli-babel in your packages.json**
 
 ```
 ember install https://github.com/philipbjorge/ember-cli-typescript.git
-```
-
-Create a tsconfig.json at the root of your project with the contents:
-```
-{
-  "compilerOptions": {
-    "target": "ES6"
-  }
-}
 ```
 
 I would also recommend disabling sourcemaps in ember-cli-build as they don't seem to work and it speeds up builds.

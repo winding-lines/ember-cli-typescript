@@ -16,12 +16,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:philipbjorge/ember-cli-coffeescript.git"
+    "url": "git@github.com:philipbjorge/ember-cli-typescript.git"
   },
   "bugs": {
-    "url": "https://github.com/kimroen/ember-cli-coffeescript/issues"
+    "url": "https://github.com/philipbjorge/ember-cli-typescript/issues"
   },
-  "homepage": "https://github.com/philipbjorge/ember-cli-coffeescript",
+  "homepage": "https://github.com/philipbjorge/ember-cli-typescript",
   "dependencies": {
     "broccoli-typescript-compiler": "0.0.6",
     "ember-cli-version-checker": "^1.0.2",
@@ -44,7 +44,6 @@
   "ember-addon": {
     "before": [
       "ember-cli-babel"
-    ],
-    "configPath": "tests/dummy/config"
+    ]
   }
 }

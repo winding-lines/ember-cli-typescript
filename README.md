@@ -1,4 +1,4 @@
-# TypeScript support for ember-cli
+# TypeScript support for ember-cli [![Build Status](https://travis-ci.org/philipbjorge/ember-cli-typescript-compiler.svg)](https://travis-ci.org/philipbjorge/ember-cli-typescript-compiler)
 Adds precompilation of TypeScript files while still allowing a mix of ES6 and TS files in your ember-cli project.
 
 Caveats: SourceMaps don't work.
@@ -15,7 +15,7 @@ This addon has support for blueprints as well as the latest versions of typescri
 **Requires that you have ember-cli-babel in your packages.json**
 
 ```
-ember install https://github.com/philipbjorge/ember-cli-typescript.git
+ember install https://github.com/philipbjorge/ember-cli-typescript-compiler.git
 ```
 
 I would also recommend disabling sourcemaps in ember-cli-build as they don't seem to work and it speeds up builds.

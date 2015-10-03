@@ -63,9 +63,9 @@ function findRouter(options) {
   var routerPathParts = [options.project.root];
 
   if (options.dummy && options.project.isEmberCLIAddon()) {
-    routerPathParts = routerPathParts.concat(['tests', 'dummy', 'app', 'router.js']);
+    routerPathParts = routerPathParts.concat(['tests', 'dummy', 'app', 'router.ts']);
   } else {
-    routerPathParts = routerPathParts.concat(['app', 'router.js']);
+    routerPathParts = routerPathParts.concat(['app', 'router.ts']);
   }
 
   return routerPathParts;

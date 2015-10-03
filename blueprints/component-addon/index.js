@@ -10,47 +10,17 @@ module.exports = {
   description: 'Generates a component. Name must contain a hyphen.',
 
   fileMapTokens: function() {
-    return {
-      __path__: function(options) {
-        if (options.pod) {
-          return path.join(options.podPath, options.locals.path, options.dasherizedModuleName);
-        }
-        return 'components';
-      },
-      __name__: function(options) {
-        if (options.pod) {
-          return 'component';
-        }
-        return options.dasherizedModuleName;
-      },
-      __root__: function(options) {
-        if (options.inRepoAddon) {
-          return path.join('lib', options.inRepoAddon, 'app');
-        }
-        return 'app';
-      }
-    };
+    var blueprint = this.lookupBlueprint('component-addon');
+    return blueprint.fileMapTokens.apply(blueprint, arguments);
   },
 
-  normalizeEntityName: function(entityName) {
-    entityName = normalizeEntityName(entityName);
-
-    return validComponentName(entityName);
+  normalizeEntityName: function() {
+    var blueprint = this.lookupBlueprint('component-addon');
+    return blueprint.normalizeEntityName.apply(blueprint, arguments);
   },
 
-  locals: function(options) {
-    var addonRawName   = options.inRepoAddon ? options.inRepoAddon : options.project.name();
-    var addonName      = stringUtil.dasherize(addonRawName);
-    var fileName       = stringUtil.dasherize(options.entity.name);
-    var importPathName       = [addonName, 'components', fileName].join('/');
-
-    if (options.pod) {
-      importPathName = [addonName, 'components', fileName,'component'].join('/');
-    }
-
-    return {
-      modulePath: importPathName,
-      path: getPathOption(options)
-    };
+  locals: function() {
+    var blueprint = this.lookupBlueprint('component-addon');
+    return blueprint.locals.apply(blueprint, arguments);
   }
 };

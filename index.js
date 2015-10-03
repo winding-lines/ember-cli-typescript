@@ -15,7 +15,9 @@ module.exports = {
     }
   },
 
-  // TODO: Blueprints
+  blueprintsPath: function() {
+    return path.join(__dirname, 'blueprints');
+  },
 
   setupPreprocessorRegistry: function(type, registry) {
     var plugin = new TypeScriptPreprocessor(); // TODO: Config

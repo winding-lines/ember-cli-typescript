@@ -1,4 +1,4 @@
-# TypeScript support for ember-cli
+# TypeScript support for ember-cli [![Build Status](https://travis-ci.org/philipbjorge/ember-cli-typescript.svg)](https://travis-ci.org/philipbjorge/ember-cli-typescript)
 Adds precompilation of TypeScript files while still allowing a mix of ES6 and TS files in your ember-cli project.
 
 Caveats: SourceMaps don't work.

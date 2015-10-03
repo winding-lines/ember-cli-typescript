@@ -4,7 +4,6 @@ import loadInitializers from 'ember/load-initializers';
 import config from './config/environment';
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
-sdfsdf;
 
 const App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,

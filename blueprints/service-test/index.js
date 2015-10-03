@@ -1,12 +1,7 @@
-/*jshint node:true*/
-
-var testInfo = require('ember-cli-test-info');
-
 module.exports = {
   description: 'Generates a service unit test.',
-  locals: function(options) {
-    return {
-      friendlyTestDescription: testInfo.description(options.entity.name, "Unit", "Service")
-    };
-  },
+  locals: function() {
+    var blueprint = this.lookupBlueprint('service-test');
+    return blueprint.locals.apply(blueprint, arguments);
+  }
 };

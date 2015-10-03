@@ -23,18 +23,19 @@
   "homepage": "https://github.com/philipbjorge/ember-cli-coffeescript",
   "dependencies": {
     "broccoli-typescript-compiler": "0.0.6",
-    "ember-cli-version-checker": "^1.0.2"
+    "ember-cli-version-checker": "^1.0.2",
+    "ember-cli-babel": "^5.1.5"
   },
   "devDependencies": {
     "bower": "^1.4.1",
-    "broccoli-asset-rev": "^2.0.0",
     "ember-cli": "^0.2.0",
     "ember-cli-app-version": "0.3.1",
     "ember-cli-dependency-checker": "0.0.7",
     "ember-cli-htmlbars": "^0.7.4",
     "ember-cli-qunit": "0.3.7",
     "ember-cli-uglify": "1.0.1",
-    "ember-export-application-global": "^1.0.2"
+    "ember-export-application-global": "^1.0.2",
+    "glob": "^4.4.2"
   },
   "ember-addon": {
     "before": [

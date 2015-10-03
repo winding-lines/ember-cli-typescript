@@ -22,52 +22,16 @@ module.exports = {
   ],
 
   fileMapTokens: function() {
-    return {
-      __templatepath__: function(options) {
-        if (options.pod) {
-          return path.join(options.podPath, options.dasherizedModuleName);
-        }
-        return 'templates';
-      },
-      __templatename__: function(options) {
-        if (options.pod) {
-          return 'template';
-        }
-        return options.dasherizedModuleName;
-      },
-      __root__: function(options) {
-        if (options.inRepoAddon) {
-          return path.join('lib', options.inRepoAddon, 'addon');
-        }
-
-        if (options.inDummy) {
-          return path.join('tests','dummy','app');
-        }
-
-        if (options.inAddon) {
-          return 'addon';
-        }
-
-        return 'app';
-      }
-    };
-  },
-
-  shouldEntityTouchRouter: function(name) {
-    var isIndex = name === 'index';
-    var isBasic = name === 'basic';
-    var isApplication = name === 'application';
-
-    return !isBasic && !isIndex && !isApplication;
+    var blueprint = this.lookupBlueprint('route')
+    return blueprint.fileMapTokens.apply(blueprint, arguments);
   },
 
   shouldTouchRouter: function(name, options) {
-    var entityTouchesRouter = this.shouldEntityTouchRouter(name);
-    var isDummy = !!options.dummy;
-    var isAddon = !!options.project.isEmberCLIAddon();
-    var isAddonDummyOrApp = (isDummy === isAddon);
-
-    return (entityTouchesRouter && isAddonDummyOrApp && !options.dryRun && !options.inRepoAddon && !options.skipRouter);
+    return this.lookupBlueprint('route').shouldTouchRouter(name, options);
+  },
+  
+  shouldEntityTouchRouter: function(name, options) {
+    return this.lookupBlueprint('route').shouldEntityTouchRouter(name, options);
   },
 
   afterInstall: function(options) {

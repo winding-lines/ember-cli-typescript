@@ -15,7 +15,7 @@ This addon has support for blueprints as well as the latest versions of typescri
 **Requires that you have ember-cli-babel in your packages.json**
 
 ```
-ember install https://github.com/philipbjorge/ember-cli-typescript-compiler.git
+ember install ember-cli-typescript-compiler
 ```
 
 I would also recommend disabling sourcemaps in ember-cli-build as they don't seem to work and it speeds up builds.

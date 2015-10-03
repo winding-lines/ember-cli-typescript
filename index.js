@@ -1,13 +1,13 @@
 'use strict';
 var path      = require('path');
 var checker   = require('ember-cli-version-checker');
-
 var TypeScriptPreprocessor = require('./lib/typescript-preprocessor')
 
 module.exports = {
   name: 'ember-cli-typescript',
 
   included: function(app) {
+    this._super.included.apply(this, arguments);
     this.app = app;
 
     if (this.shouldSetupRegistryInIncluded()) {

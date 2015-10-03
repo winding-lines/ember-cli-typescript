@@ -20,7 +20,9 @@ module.exports = {
   },
 
   setupPreprocessorRegistry: function(type, registry) {
-    var plugin = new TypeScriptPreprocessor(); // TODO: Config
+    var plugin = new TypeScriptPreprocessor({
+      tsconfig: path.join(__dirname, 'tsconfig.json')
+    }); // TODO: Merge external config
     registry.add('js', plugin);
   },
 

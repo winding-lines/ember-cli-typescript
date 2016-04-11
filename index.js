@@ -1,36 +1,32 @@
 'use strict';
 var path      = require('path');
 var checker   = require('ember-cli-version-checker');
-var defaults  = require('lodash').defaults;
-
-var TypeScriptPreprocessor = require('./lib/typescript-preprocessor');
+var TypeScriptPreprocessor = require('./lib/typescript-preprocessor')
 
 module.exports = {
-  name: 'Ember CLI TypeScript Addon',
+  name: 'ember-cli-typescript-compiler',
 
-  shouldSetupRegistryInIncluded: function() {
-    return !checker.isAbove(this, '0.2.0');
-  },
+  included: function(app) {
+    this._super.included.apply(this, arguments);
+    this.app = app;
 
-  getConfig: function() {
-    var brocfileConfig = {};
-    var typeScriptOptions = defaults(this.project.config(process.env.EMBER_ENV).typeScriptOptions || {},
-      brocfileConfig, {
-        blueprints: true
-      });
-
-    return typeScriptOptions;
-  },
-
-  blueprintsPath: function() {
-    if (this.getConfig().blueprints) {
-      return path.join(__dirname, 'blueprints');
+    if (this.shouldSetupRegistryInIncluded()) {
+      this.setupPreprocessorRegistry('parent', app.registry);
     }
   },
 
-  setupPreprocessorRegistry: function(type, registry) {
-    var plugin = new TypeScriptPreprocessor(this.getConfig());
+  blueprintsPath: function() {
+    return path.join(__dirname, 'blueprints');
+  },
 
+  setupPreprocessorRegistry: function(type, registry) {
+    var plugin = new TypeScriptPreprocessor({
+      tsconfig: path.join(__dirname, 'tsconfig.json')
+    }); // TODO: Merge external config
     registry.add('js', plugin);
+  },
+
+  shouldSetupRegistryInIncluded: function() {
+    return !checker.isAbove(this, '0.2.0');
   }
 };

@@ -16,4 +16,3 @@ ember install:addon ember-cli-typescript
 ```
 
 **NB**: This addon requires ember-cli version `0.2.0-beta.1` and up.
-

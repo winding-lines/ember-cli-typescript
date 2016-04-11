@@ -6,6 +6,7 @@ var path        = require('path');
 module.exports = {
   description: 'Generates a component. Name must contain a hyphen.',
 
+<<<<<<< HEAD
   fileMapTokens: function() {
     return {
       __path__: function(options) {
@@ -50,5 +51,31 @@ module.exports = {
     return {
       templatePath: templatePath
     };
+=======
+  availableOptions: [
+    {
+      name: 'path',
+      type: String,
+      default: 'components',
+      aliases:[
+        {'no-path': ''}
+      ]
+    }
+  ],
+
+  fileMapTokens: function() {
+    var blueprint = this.lookupBlueprint('component');
+    return blueprint.fileMapTokens.apply(blueprint, arguments);
+  },
+
+  normalizeEntityName: function() {
+    var blueprint = this.lookupBlueprint('component');
+    return blueprint.normalizeEntityName.apply(blueprint, arguments);
+  },
+
+  locals: function() {
+    var blueprint = this.lookupBlueprint('component');
+    return blueprint.locals.apply(blueprint, arguments);
+>>>>>>> 1dc7a3bd05b2eb613ffff62f7396d86af0be2793
   }
 };

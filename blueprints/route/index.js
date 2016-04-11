@@ -1,112 +1,82 @@
-var SilentError = require('../../lib/errors/silent');
+/*jshint node:true*/
+
 var fs          = require('fs-extra');
-var inflection  = require('inflection');
 var path        = require('path');
-var EOL         = require('os').EOL;
+var chalk       = require('chalk');
 var EmberRouterGenerator = require('ember-router-generator');
 
 module.exports = {
-  description: 'Generates a route and registers it with the router.',
+  description: 'Generates a route and a template, and registers the route with the router.',
 
   availableOptions: [
-    {
-      name: 'type',
-      type: String,
-      values: ['route', 'resource'],
-      default: 'route',
-      aliases:[
-        {'route': 'route'},
-        {'resource': 'resource'}
-      ]
-    },
     {
       name: 'path',
       type: String,
       default: ''
+    },
+    {
+      name: 'skip-router',
+      type: Boolean,
+      default: false
     }
   ],
 
   fileMapTokens: function() {
-    return {
-      __templatepath__: function(options) {
-        if (options.pod) {
-          return path.join(options.podPath, options.dasherizedModuleName);
-        }
-        return 'templates';
-      },
-      __templatename__: function(options) {
-        if (options.pod) {
-          return 'template';
-        }
-        return options.dasherizedModuleName;
-      }
-    };
+    var blueprint = this.lookupBlueprint('route')
+    return blueprint.fileMapTokens.apply(blueprint, arguments);
   },
 
-  beforeInstall: function(options) {
-    var type = options.type;
-
-    if (type && !/^(resource|route)$/.test(type)) {
-      throw new SilentError('Unknown route type "' + type + '". Should be "route" or "resource".');
-    }
+  shouldTouchRouter: function(name, options) {
+    return this.lookupBlueprint('route').shouldTouchRouter(name, options);
   },
 
-  shouldTouchRouter: function(name) {
-    var isIndex = /index$/.test(name);
-    var isBasic = name === 'basic';
-    var isApplication = name === 'application';
-
-    return !isBasic && !isIndex && !isApplication;
+  shouldEntityTouchRouter: function(name, options) {
+    return this.lookupBlueprint('route').shouldEntityTouchRouter(name, options);
   },
 
   afterInstall: function(options) {
-    var entity  = options.entity;
-
-    if (this.shouldTouchRouter(entity.name) && !options.dryRun) {
-      addRouteToRouter(entity.name, {
-        type: options.type,
-        root: options.project.root,
-        path: options.path
-      });
-    }
-  },
-
-  beforeUninstall: function(options) {
-    var type = options.type;
-
-    if (type && !/^(resource|route)$/.test(type)) {
-      throw new SilentError('Unknown route type "' + type + '". Should be "route" or "resource".');
-    }
+    updateRouter.call(this, 'add', options);
   },
 
   afterUninstall: function(options) {
-    var entity  = options.entity;
-
-    if (this.shouldTouchRouter(entity.name) && !options.dryRun) {
-      removeRouteFromRouter(entity.name, {
-        type: options.type,
-        root: options.project.root
-      });
-    }
+    updateRouter.call(this, 'remove', options);
   }
 };
 
-function removeRouteFromRouter(name, options) {
-  var routerPath = path.join(options.root, 'app', 'router.js');
-  var source = fs.readFileSync(routerPath, 'utf-8');
+function updateRouter(action, options) {
+  var entity = options.entity;
+  var actionColorMap = {
+    add: 'green',
+    remove: 'red'
+  };
+  var color = actionColorMap[action] || 'gray';
 
-  var routes = new EmberRouterGenerator(source);
-  var newRoutes = routes.remove(name);
+  if (this.shouldTouchRouter(entity.name, options)) {
+    writeRoute(action, entity.name, options);
 
-  fs.writeFileSync(routerPath, newRoutes.code());
+    this.ui.writeLine('updating router');
+    this._writeStatusToUI(chalk[color], action + ' route', entity.name);
+  }
 }
 
-function addRouteToRouter(name, options) {
-  var routerPath = path.join(options.root, 'app', 'router.js');
+function findRouter(options) {
+  var routerPathParts = [options.project.root];
+
+  if (options.dummy && options.project.isEmberCLIAddon()) {
+    routerPathParts = routerPathParts.concat(['tests', 'dummy', 'app', 'router.ts']);
+  } else {
+    routerPathParts = routerPathParts.concat(['app', 'router.ts']);
+  }
+
+  return routerPathParts;
+}
+
+function writeRoute(action, name, options) {
+  var routerPath = path.join.apply(null, findRouter(options));
   var source = fs.readFileSync(routerPath, 'utf-8');
 
   var routes = new EmberRouterGenerator(source);
-  var newRoutes = routes.add(name, options);
+  var newRoutes = routes[action](name, options);
 
   fs.writeFileSync(routerPath, newRoutes.code());
 }
